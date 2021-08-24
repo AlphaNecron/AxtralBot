@@ -1,7 +1,7 @@
 {
-	"token": "DISCORD_TOKEN",
+  "token": "DISCORD_TOKEN",
   "prefix": "DISCORD_PREFIX",
   "uid": "YOUR_DISCORD_USER_ID",
   "auth": "YOUR_UPLOAD_TOKEN",
-  "server": "https://example.com" // must specify protocol
+  "server": "https://example.com"
 }
