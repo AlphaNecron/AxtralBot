@@ -4,7 +4,7 @@ const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 const isImageUrl = require('is-image-url');
 const axios = require('axios');
 const FormData = require('form-data');
-
+const allowedFileTypes = [ 'jpeg', 'jpg', 'tiff', 'png', 'gif' ];
 client.once('ready', () => {
   console.log('Ready!');
 });
@@ -14,7 +14,7 @@ client.on('message', async msg => {
   const args = msg.content.slice(prefix.length).trim().split(' ');
   const command = args.shift().toLowerCase();
   if (command === "help") {
-    msg.channel.send(generateHelpMsg());
+    msg.channel.send(genHelpMsg());
   }
   else if (command === "upload") {
     if (isImageUrl(args[0])) {
@@ -30,17 +30,32 @@ client.on('message', async msg => {
   }
 });
 
+function isValidCt(ct) {
+  let arr = ct.split("/");
+  let type = arr[0];
+  let subtype = arr[1];
+  console.log(`Type: ${type}\nSubtype: ${subtype}`);
+  if (type === 'image' && allowedFileTypes.includes(subtype)) {
+    return true;
+  }
+  return false;
+}
+
 async function upload(url) {
   let ir = await axios({
     url: url,
     method: 'GET',
     responseType: 'arraybuffer'
   });
+  const ct = ir.headers['content-type'];
+  if (!isValidCt(ct)) {
+    return "Invalid file type!";
+  }
   const form = new FormData();
   form.append('file', ir.data, {
-    contentType: 'image/png',
+    contentType: ct,
     name: 'file',
-    filename: 'image.png'
+    filename: `image.${ct.split("/")[1]}`
   });
   let result = await axios({
     url: `${server}/api/upload`,
@@ -58,7 +73,7 @@ async function upload(url) {
   return `Image uploaded!\nURL: ${result.url}`;
 }
 
-function generateHelpMsg() {
+function genHelpMsg() {
   return new MessageEmbed()
     .setAuthor("Axtral")
     .addFields(
