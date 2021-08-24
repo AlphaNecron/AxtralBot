@@ -34,7 +34,6 @@ function isValidCt(ct) {
   let arr = ct.split("/");
   let type = arr[0];
   let subtype = arr[1];
-  console.log(`Type: ${type}\nSubtype: ${subtype}`);
   if (type === 'image' && allowedFileTypes.includes(subtype)) {
     return true;
   }
