@@ -31,9 +31,7 @@ client.on('message', async msg => {
 });
 
 function isValidCt(ct) {
-  let arr = ct.split("/");
-  let type = arr[0];
-  let subtype = arr[1];
+  const [type, subtype] = ct.split("/");
   if (type === 'image' && allowedFileTypes.includes(subtype)) {
     return true;
   }
@@ -41,7 +39,7 @@ function isValidCt(ct) {
 }
 
 async function upload(url) {
-  let ir = await axios({
+  const ir = await axios({
     url: url,
     method: 'GET',
     responseType: 'arraybuffer'
@@ -56,7 +54,7 @@ async function upload(url) {
     name: 'file',
     filename: `image.${ct.split("/")[1]}`
   });
-  let result = await axios({
+  const result = await axios({
     url: `${server}/api/upload`,
     method: "POST",
     data: form,
